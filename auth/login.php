@@ -12,14 +12,37 @@ require_once "../_config/config.php"
     <meta name="author" content="">
     <title>Loging - Rumah Sakit</title>
     <!-- Bootstrap Core CSS -->
-    <link href="../_assets/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="icon" href="<?base_url()?>/_assets/img/day.jpg">
+    <link href="<?=base_url('_assets/css/bootstrap.min.css');?>" rel="stylesheet">
+    <link rel="icon" href="<?=base_url('_assets/img/day.jpg')?>">
 </head>
 
 <body>
     <div id="wrapper">
         <div class="container">
             <div align="center" style="margin-top: 210px;">
+                <?php
+                if(isset($_POST['login'])){
+                    $user = trim(mysqli_real_escape_string($koneksi, $_POST['user']));
+                    $pass = sha1(trim(mysqli_real_escape_string($koneksi, $_POST['pass'])));
+                    $sql_login = mysqli_query($koneksi,"SELECT * FROM tb_user WHERE username='$user' AND password='$pass'") or die (mysqli_error($koneksi));
+                    if (mysqli_num_rows($sql_login) > 0){
+                        $_SESSION['user'] = $user;
+                        echo "<script>window.location='".base_url()."';</script>";
+                    }else{ ?>
+                    <div class="row">
+                        <div class="col-lg-6 col-lg-offset-3">
+                            <div class="alert alert-danger alert-dismissable" role="alert">
+                                <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                <strong>Login gagal!</strong> Username / Password Salah
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                    }
+                }
+                ?>
+
                 <form action="" method="POST" class="navbar-form" >
                     <div class="input-group">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
@@ -36,6 +59,8 @@ require_once "../_config/config.php"
             </div>   
         </div>
     </div>
+    <script src="<?=base_url('_assets/js/jquery.js')?>"></script>
+    <script src="<?=base_url('_assets/js/bootstrap.min.js')?>"></script>
 </body>
 
 </html>
